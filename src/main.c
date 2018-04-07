@@ -3,20 +3,23 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "main.h"
+
 #define BUF_SIZE 256
 #define MAX_COMMAND_NUM 64
 #define TOKEN_DELIM " \t\r\n\a"
-
-// bool is_line_end(char ch);
 
 char* buildin_commands[] = {
   "help"
   "exit"
 };
 
-int (*buildin_func[])(char**) = {
+int (*buildin_func[])(char** args) = {
+  &cmd_help,
+  &cmd_exit
 };
 
+// read stdin, return string.
 char* read_line(){
   char* buf;
   buf = malloc(sizeof(char) * BUF_SIZE);
@@ -38,7 +41,7 @@ char* read_line(){
     
     buf[size++] = ch;
 
-    // if 
+    // TODO: realloc
     if(size >= 256){
       fprintf(stderr, "Minish cannot accept ");
       exit(EXIT_FAILURE);
@@ -55,7 +58,6 @@ char** split_line(char* line){
   char* token = strtok(line, TOKEN_DELIM);
 
   while(token != NULL){
-    puts(token);
     commands[tkn_pos++] = token;
     token = strtok(NULL, TOKEN_DELIM);
   }
@@ -64,22 +66,52 @@ char** split_line(char* line){
   return commands;  
 }
 
-void exec_commands(char** commands){
+int exec_commands(char** commands){
   if(commands[0] == NULL){
-    return;
+    return 1;
+  }
+
+  // execute buildin commands if exists.
+  if(strcmp(commands[0], "help") == 0){
+    return cmd_help();
   }
   
-  char* cmd = commands[0];
-
-  //char** args = 
-  if(strcmp(cmd, "echo")){
-    
+  if(strcmp(commands[0], "exit") == 0){
+    return cmd_exit();
   }
+
+  // not buildin command, so execute fork, wait.
+  return launch_command(commands);
+}
+
+int launch_command(char** commands){
+  pid_t pid, wpid;
+  int status;
+
+  pid = fork();
+
+  if(pid == 0){
+    // child process
+    if(execvp(commands[0], commands) == -1){
+      perror("Minish"); // name of this prog.
+    }
+  } else {
+    // parent process
+    do {
+      waitpid(pid, &status, WUNTRACED);
+    } while(!WIFEXITED(status) && !WIFSIGNALED(status));
+  }
+  return 1;
 }
 
 
-void echo(char** args){
-  
+int cmd_help(char** args){
+  printf("Minish ver 0.0.1\n");
+  return 0;
+}
+
+int cmd_exit(char** args){
+  exit(0);
 }
 
 int main(void){
@@ -89,10 +121,10 @@ int main(void){
     printf(">");
     char* line = read_line();
     char** commands = split_line(line);
-    // printf("%s", line);
-    // printf("%s\n", commands[0]);
+    exec_commands(commands);
+    free(line);
+    free(commands);
   }
-  
   
   return 0;
 }
