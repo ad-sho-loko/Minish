@@ -1,8 +1,10 @@
 # Minish
 
+Simple shell implementation from scratch.
+
 ![Badge Status](https://ci-as-a-service)
 
-Minish is a toy bash implement in C.
+Minish is a toy shell implement in C.
 
 ## Features
 
