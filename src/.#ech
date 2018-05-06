@@ -1,1 +1,0 @@
-Shogo@Shogo-no-MacBook-Pro.local.1003
