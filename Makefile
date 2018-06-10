@@ -5,4 +5,4 @@ run: main
 	./src/main
 
 clean:
-	rm -rf *.o
+	rm -rf *.o src/main

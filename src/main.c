@@ -46,7 +46,7 @@ char* read_line(){
 
     // TODO: realloc
     if(size >= 256){
-      fprintf(stderr, "Minish cannot accept ");
+      fprintf(stderr, "Minish cannot accept more than 256 chars");
       exit(EXIT_FAILURE);
     }
   }
@@ -96,7 +96,8 @@ int launch_command(char** commands){
   if(pid == 0){
     // child process
     if(execvp(commands[0], commands) == -1){
-      perror("Minish"); // name of this prog.
+      fprintf(stderr, "Minish : no such a command. \n");
+      // perror("Minish "); // name of this prog.
     }
   } else {
     // parent process
