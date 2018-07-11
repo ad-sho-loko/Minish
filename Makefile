@@ -1,8 +1,10 @@
+CC = gcc
+
 main:
-	gcc ./src/main.c -I./include/ -o ./src/main
+	$(CC) ./src/main.c -I./src/ -o ./src/main
 
 run: main
 	./src/main
 
 clean:
-	rm -rf *.o src/main
+	rm -rf *.o ./src/main

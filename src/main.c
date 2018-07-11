@@ -22,7 +22,7 @@ int (*buildin_func[])(char** args) = {
   &cmd_exit
 };
 
-// read stdin, return string.
+// read stdin, return string until `\n`.
 char* read_line(){
   char* buf;
   buf = malloc(sizeof(char) * BUF_SIZE);
@@ -97,7 +97,6 @@ int launch_command(char** commands){
     // child process
     if(execvp(commands[0], commands) == -1){
       fprintf(stderr, "Minish : no such a command. \n");
-      // perror("Minish "); // name of this prog.
     }
   } else {
     // parent process
