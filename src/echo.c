@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-int is_line_feed = 1;
+static bool is_line_feed = true;
 
 static void usage(){
 
@@ -22,7 +23,7 @@ int parse_arg(int argc, char** argv){
     switch(opt){
       case 'n':
         opt_cnt++;
-        is_line_feed = 0;
+        is_line_feed = false;
         break;
       case 'b':
         opt_cnt++;
